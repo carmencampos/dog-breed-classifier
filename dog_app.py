@@ -59,7 +59,7 @@
 # - `train_targets`, `valid_targets`, `test_targets` - numpy arrays containing onehot-encoded classification labels 
 # - `dog_names` - list of string-valued dog breed names for translating labels
 
-# In[1]:
+# In[55]:
 
 
 from sklearn.datasets import load_files       
@@ -94,7 +94,7 @@ print('There are %d test dog images.'% len(test_files))
 # 
 # In the code cell below, we import a dataset of human images, where the file paths are stored in the numpy array `human_files`.
 
-# In[2]:
+# In[56]:
 
 
 import random
@@ -116,7 +116,7 @@ print('There are %d total human images.' % len(human_files))
 # 
 # In the next code cell, we demonstrate how to use this detector to find human faces in a sample image.
 
-# In[3]:
+# In[57]:
 
 
 import cv2                
@@ -158,7 +158,7 @@ plt.show()
 # 
 # We can use this procedure to write a function that returns `True` if a human face is detected in an image and `False` otherwise.  This function, aptly named `face_detector`, takes a string-valued file path to an image as input and appears in the code block below.
 
-# In[4]:
+# In[58]:
 
 
 # returns "True" if face is detected in image stored at img_path
@@ -179,7 +179,7 @@ def face_detector(img_path):
 # 
 # __Answer:__ 
 
-# In[5]:
+# In[59]:
 
 
 human_files_short = human_files[:100]
@@ -211,7 +211,7 @@ print('There are %d percent faces detected for dogs.'% dogs)
 # 
 # We suggest the face detector from OpenCV as a potential way to detect human images in your algorithm, but you are free to explore other approaches, especially approaches that make use of deep learning :).  Please use the code cell below to design and test your own face detection algorithm.  If you decide to pursue this _optional_ task, report performance on each of the datasets.
 
-# In[6]:
+# In[60]:
 
 
 ## (Optional) TODO: Report the performance of another  
@@ -225,7 +225,7 @@ print('There are %d percent faces detected for dogs.'% dogs)
 # 
 # In this section, we use a pre-trained [ResNet-50](http://ethereon.github.io/netscope/#/gist/db945b393d40bfa26006) model to detect dogs in images.  Our first line of code downloads the ResNet-50 model, along with weights that have been trained on [ImageNet](http://www.image-net.org/), a very large, very popular dataset used for image classification and other vision tasks.  ImageNet contains over 10 million URLs, each linking to an image containing an object from one of [1000 categories](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a).  Given an image, this pre-trained ResNet-50 model returns a prediction (derived from the available categories in ImageNet) for the object that is contained in the image.
 
-# In[7]:
+# In[61]:
 
 
 from keras.applications.resnet50 import ResNet50
@@ -258,7 +258,7 @@ ResNet50_model = ResNet50(weights='imagenet')
 # 
 # Here, `nb_samples` is the number of samples, or number of images, in the supplied array of image paths.  It is best to think of `nb_samples` as the number of 3D tensors (where each 3D tensor corresponds to a different image) in your dataset!
 
-# In[8]:
+# In[62]:
 
 
 from keras.preprocessing import image                  
@@ -285,7 +285,7 @@ def paths_to_tensor(img_paths):
 # 
 # By taking the argmax of the predicted probability vector, we obtain an integer corresponding to the model's predicted object class, which we can identify with an object category through the use of this [dictionary](https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a). 
 
-# In[9]:
+# In[63]:
 
 
 from keras.applications.resnet50 import preprocess_input, decode_predictions
@@ -302,7 +302,7 @@ def ResNet50_predict_labels(img_path):
 # 
 # We use these ideas to complete the `dog_detector` function below, which returns `True` if a dog is detected in an image (and `False` if not).
 
-# In[10]:
+# In[64]:
 
 
 ### returns "True" if a dog is detected in the image stored at img_path
@@ -319,7 +319,7 @@ def dog_detector(img_path):
 # 
 # __Answer:__ 
 
-# In[11]:
+# In[65]:
 
 
 ### TODO: Test the performance of the dog_detector function
@@ -374,7 +374,7 @@ print('There are %d percent dog detected for dogs.'% dogs)
 # 
 # We rescale the images by dividing every pixel in every image by 255.
 
-# In[12]:
+# In[66]:
 
 
 from PIL import ImageFile                            
@@ -400,7 +400,7 @@ test_tensors = paths_to_tensor(test_files).astype('float32')/255
 # 
 # __Answer:__  Convolutional Neural Networks consist of several layers with small neuron collections, each of them perceiving small parts of an image.The results from all the collections in a layer partially overlap in a way to create the entire image representation. The layer below then repeats this process on the new image representation, allowing the system to learn about the image composition. The Convolutional Neural Network (CNN or ConvNet) is a subtype of Neural Networks that is mainly used for applications in image and speech recognition. Its built-in convolutional layer reduces the high dimensionality of images without losing its information. That is why CNNs are especially suited for this use case.
 
-# In[13]:
+# In[67]:
 
 
 from keras.layers import Conv2D, MaxPooling2D, GlobalAveragePooling2D
@@ -425,7 +425,7 @@ model.summary()
 
 # ### Compile the Model
 
-# In[14]:
+# In[68]:
 
 
 model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
@@ -437,7 +437,7 @@ model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['ac
 # 
 # You are welcome to [augment the training data](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html), but this is not a requirement. 
 
-# In[15]:
+# In[69]:
 
 
 from keras.callbacks import ModelCheckpoint  
@@ -458,7 +458,7 @@ model.fit(train_tensors, train_targets,
 
 # ### Load the Model with the Best Validation Loss
 
-# In[16]:
+# In[70]:
 
 
 model.load_weights('saved_models/weights.best.from_scratch.hdf5')
@@ -468,7 +468,7 @@ model.load_weights('saved_models/weights.best.from_scratch.hdf5')
 # 
 # Try out your model on the test dataset of dog images.  Ensure that your test accuracy is greater than 1%.
 
-# In[17]:
+# In[71]:
 
 
 # get index of predicted dog breed for each image in test set
@@ -487,7 +487,7 @@ print('Test accuracy: %.4f%%' % test_accuracy)
 # 
 # ### Obtain Bottleneck Features
 
-# In[18]:
+# In[72]:
 
 
 bottleneck_features = np.load('bottleneck_features/DogVGG16Data.npz')
@@ -500,7 +500,7 @@ test_VGG16 = bottleneck_features['test']
 # 
 # The model uses the the pre-trained VGG-16 model as a fixed feature extractor, where the last convolutional output of VGG-16 is fed as input to our model.  We only add a global average pooling layer and a fully connected layer, where the latter contains one node for each dog category and is equipped with a softmax.
 
-# In[19]:
+# In[73]:
 
 
 VGG16_model = Sequential()
@@ -512,7 +512,7 @@ VGG16_model.summary()
 
 # ### Compile the Model
 
-# In[20]:
+# In[74]:
 
 
 VGG16_model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
@@ -520,7 +520,7 @@ VGG16_model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metric
 
 # ### Train the Model
 
-# In[21]:
+# In[75]:
 
 
 checkpointer = ModelCheckpoint(filepath='saved_models/weights.best.VGG16.hdf5', 
@@ -533,7 +533,7 @@ VGG16_model.fit(train_VGG16, train_targets,
 
 # ### Load the Model with the Best Validation Loss
 
-# In[22]:
+# In[76]:
 
 
 VGG16_model.load_weights('saved_models/weights.best.VGG16.hdf5')
@@ -543,7 +543,7 @@ VGG16_model.load_weights('saved_models/weights.best.VGG16.hdf5')
 # 
 # Now, we can use the CNN to test how well it identifies breed within our test dataset of dog images.  We print the test accuracy below.
 
-# In[23]:
+# In[77]:
 
 
 # get index of predicted dog breed for each image in test set
@@ -556,7 +556,7 @@ print('Test accuracy: %.4f%%' % test_accuracy)
 
 # ### Predict Dog Breed with the Model
 
-# In[24]:
+# In[78]:
 
 
 from extract_bottleneck_features import *
@@ -597,7 +597,7 @@ def VGG16_predict_breed(img_path):
 #     valid_{network} = bottleneck_features['valid']
 #     test_{network} = bottleneck_features['test']
 
-# In[25]:
+# In[79]:
 
 
 ### TODO: Obtain bottleneck features from another pre-trained CNN.
@@ -619,7 +619,7 @@ test_Resnet50 = bottleneck_features['test']
 # 
 # 
 
-# In[26]:
+# In[80]:
 
 
 ### TODO: Define your architecture.
@@ -632,7 +632,7 @@ Resnet50_model.summary()
 
 # ### (IMPLEMENTATION) Compile the Model
 
-# In[27]:
+# In[81]:
 
 
 ### TODO: Compile the model.
@@ -645,7 +645,7 @@ Resnet50_model.compile(loss='categorical_crossentropy', optimizer='rmsprop', met
 # 
 # You are welcome to [augment the training data](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html), but this is not a requirement. 
 
-# In[28]:
+# In[82]:
 
 
 ### TODO: Train the model.
@@ -659,7 +659,7 @@ Resnet50_model.fit(train_Resnet50, train_targets,
 
 # ### (IMPLEMENTATION) Load the Model with the Best Validation Loss
 
-# In[29]:
+# In[83]:
 
 
 ### TODO: Load the model weights with the best validation loss.
@@ -670,7 +670,7 @@ Resnet50_model.load_weights('saved_models/weights.best.Resnet50.hdf5')
 # 
 # Try out your model on the test dataset of dog images. Ensure that your test accuracy is greater than 60%.
 
-# In[30]:
+# In[84]:
 
 
 ### TODO: Calculate classification accuracy on the test dataset.
@@ -697,11 +697,53 @@ print('Test accuracy: %.4f%%' % test_accuracy)
 #     
 # where `{network}`, in the above filename, should be one of `VGG19`, `Resnet50`, `InceptionV3`, or `Xception`.
 
-# In[ ]:
+# In[86]:
 
 
 ### TODO: Write a function that takes a path to an image as input
 ### and returns the dog breed that is predicted by the model.
+def Resnet50_predict_breed(img_path):
+    # extract bottleneck features
+    bottleneck_feature = extract_Resnet50(path_to_tensor(img_path))
+    # obtain predicted vector
+    predicted_vector = Resnet50_model.predict(bottleneck_feature)
+    # return dog breed that is predicted by the model
+    return dog_names[np.argmax(predicted_vector)]
+
+
+# In[88]:
+
+
+Resnet50_predict_breed('images/American_water_spaniel_00648.jpg')
+
+
+# In[89]:
+
+
+from matplotlib import pyplot as plt
+from matplotlib import image as mpimg
+ 
+img = mpimg.imread('images/American_water_spaniel_00648.jpg')
+plt.imshow(img)
+plt.show()
+
+
+# In[91]:
+
+
+import os
+from skimage import io
+
+directory = 'dog_images'
+for filename in os.listdir(directory):
+    f = os.path.join(directory, filename)
+    # checking if it is a file
+    if os.path.isfile(f):
+        print('Dog Breed input ', filename)
+        img = mpimg.imread(f)
+        plt.imshow(img)
+        plt.show()
+        print('Dog Breed output ', Resnet50_predict_breed(f))
 
 
 # ---
@@ -722,11 +764,36 @@ print('Test accuracy: %.4f%%' % test_accuracy)
 # This photo looks like an Afghan Hound.
 # ### (IMPLEMENTATION) Write your Algorithm
 
-# In[ ]:
+# In[94]:
 
 
 ### TODO: Write your algorithm.
 ### Feel free to use as many code cells as needed.
+
+def predict_dog_breed(directory):
+    # get all the files in the diretory
+    for filename in os.listdir(directory):
+        f = os.path.join(directory, filename)
+        # checking if it is a file
+        if os.path.isfile(f):
+            print('Filename and or Dog Breed input ', filename)
+            img = mpimg.imread(f)
+            plt.imshow(img)
+            plt.show()
+            # if it detects a dog
+            if dog_detector(f):
+                print('Dog Breed output ', Resnet50_predict_breed(f))
+            # if it detects an human face
+            elif face_detector(f):
+                print('Resembling Dog Breed output ', Resnet50_predict_breed(f))
+            else:
+                print('Not human or dog detected in the image')
+
+
+# In[95]:
+
+
+predict_dog_breed('images')
 
 
 # ---
@@ -749,4 +816,5 @@ print('Test accuracy: %.4f%%' % test_accuracy)
 ## TODO: Execute your algorithm from Step 6 on
 ## at least 6 images on your computer.
 ## Feel free to use as many code cells as needed.
+predict_dog_breed('my_images')
 
